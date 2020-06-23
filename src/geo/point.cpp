@@ -1,24 +1,23 @@
 /*  $Id$
- * 
+ *
  *  Copyright (c) 2010 Anders Wallin (anders.e.e.wallin "at" gmail.com).
- *  
- *  This file is part of OpenCAMlib 
+ *
+ *  This file is part of OpenCAMlib
  *  (see https://github.com/aewallin/opencamlib).
- *  
+ *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
  *  the Free Software Foundation, either version 2.1 of the License, or
  *  (at your option) any later version.
- *  
+ *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU Lesser General Public License for more details.
- *  
+ *
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-#include <cmath> // sqrt, sin, cos, fabs
 #include <cassert>
 #include <sstream>
 
@@ -28,12 +27,6 @@
 
 namespace ocl
 {
-    
-Point::Point() {
-    x=0;
-    y=0;
-    z=0;
-}
 
 Point::Point(double xin, double yin, double zin) {
     x=xin;
@@ -47,34 +40,11 @@ Point::Point(double xin, double yin) {
     z=0.0;
 }
 
-Point::Point(const Point &p) {
-    x=p.x;
-    y=p.y;
-    z=p.z;
-}
-
-
 //********     methods ********************** */
 
 
-double Point::norm() const {
-    return sqrt( square(x) + square(y) + square(z) );
-}
-
-Point Point::cross(const Point &p) const {
-    double xc = y * p.z - z * p.y;
-    double yc = z * p.x - x * p.z;
-    double zc = x * p.y - y * p.x;
-    return Point(xc, yc, zc);
-}
-
 double Point::dot(const Point &p) const {
     return x * p.x + y * p.y + z * p.z;
-}
-
-void Point::normalize() {
-    if (this->norm() != 0.0)
-        *this *=(1/this->norm());
 }
 
 double Point::xyNorm() const {
@@ -133,7 +103,7 @@ void Point::matrixRotate(double a,double b, double c,
 }
 
 double Point::xyDistance(const Point &p) const
-{   
+{
     return (*this - p).xyNorm();
     //return sqrt(pow(x - p.x, 2) + pow((y - p.y), 2));
 }
@@ -185,9 +155,9 @@ Point Point::xyClosestPoint(const Point &p1, const Point &p2) const
         std::cout << "point.cpp: xyClosestPoint ERROR!: p2="<<p2<< "\n";
         std::cout << "point.cpp: xyClosestPoint ERROR!: in the xy-plane\n";
         assert(0);
-        return Point(0,0,0); 
+        return Point(0,0,0);
     }
-        
+
     double u;
     // vector notation:
     // u = (p3-p1) dot v / (v dot v)
@@ -217,23 +187,23 @@ bool Point::isRight(const Point &p1, const Point &p2) const
     if (t > 0.00000000000001) /// \todo FIXME: hardcoded magic number...
         return true;
     else
-        return false;    
+        return false;
 }
 
 bool Point::isInside(const Triangle &t) const {
     // point in triangle test
     // http://www.blackpawn.com/texts/pointinpoly/default.html
-    
+
     Point v0 = t.p[2] - t.p[0];
     Point v1 = t.p[1] - t.p[0];
     Point v2 = *this  - t.p[0];
-    
+
     double dot00 = v0.dot(v0);
     double dot01 = v0.dot(v1);
     double dot02 = v0.dot(v2);
     double dot11 = v1.dot(v1);
     double dot12 = v1.dot(v2);
-    
+
     double invD = 1.0 / ( dot00 *dot11 - dot01*dot01 );
     // barycentric coordinates
     double u = (dot11 * dot02 - dot01 * dot12) * invD;
@@ -261,49 +231,10 @@ bool Point::isInside(const Point& p1, const Point& p2) const {
 
 
 
-/* **************** Operators ***************  
+/* **************** Operators ***************
  *  see
  *  http://www.cs.caltech.edu/courses/cs11/material/cpp/donnie/cpp-ops.html
 */
-
-Point& Point::operator=(const Point &p) {
-    if (this == &p)
-        return *this;
-    x=p.x;
-    y=p.y;
-    z=p.z;
-    return *this;
-}
-
-// Point*scalar multiplication
-Point& Point::operator*=(const double &a) {
-    x*=a;
-    y*=a;
-    z*=a;
-    return *this;
-}
-
-Point& Point::operator+=(const Point &p) {
-    x+=p.x;
-    y+=p.y;
-    z+=p.z;
-    return *this;
-}
-
-Point& Point::operator-=(const Point &p) {
-    x-=p.x;
-    y-=p.y;
-    z-=p.z;
-    return *this;
-}
-
-const Point Point::operator+(const Point &p) const {
-    return Point(*this) += p;
-}
-
-const Point Point::operator-(const Point &p) const {
-    return Point(*this) -= p;
-}
 
 const Point Point::operator*(const double &a) const {
     return Point(*this) *= a;
@@ -348,7 +279,7 @@ void Point::z_projectOntoEdge(const Point& p1, const Point& p2) {
     // now locate z-coord of *this on edge
     double t;
     if ( fabs(p2.x-p1.x) > fabs(p2.y-p1.y) ) {
-        t = (this->x - p1.x) / (p2.x-p1.x); 
+        t = (this->x - p1.x) / (p2.x-p1.x);
     } else {
         t = (this->y - p1.y) / (p2.y-p1.y);
     }
@@ -363,7 +294,7 @@ std::string Point::str() const {
 }
 
 std::ostream& operator<<(std::ostream &stream, const Point& p) {
-  stream << "(" << p.x << ", " << p.y << ", " << p.z << ")"; 
+  stream << "(" << p.x << ", " << p.y << ", " << p.z << ")";
   return stream;
 }
 

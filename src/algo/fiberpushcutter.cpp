@@ -1,20 +1,20 @@
 /*  $Id$
- * 
+ *
  *  Copyright (c) 2010 Anders Wallin (anders.e.e.wallin "at" gmail.com).
- *  
- *  This file is part of OpenCAMlib 
+ *
+ *  This file is part of OpenCAMlib
  *  (see https://github.com/aewallin/opencamlib).
- *  
+ *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
  *  the Free Software Foundation, either version 2.1 of the License, or
  *  (at your option) any later version.
- *  
+ *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU Lesser General Public License for more details.
- *  
+ *
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
@@ -22,7 +22,7 @@
 #include <boost/foreach.hpp>
 #include <boost/progress.hpp>
 
-#ifdef _OPENMP  
+#ifdef _OPENMP
     #include <omp.h>
 #endif
 
@@ -56,7 +56,7 @@ void FiberPushCutter::setSTL(const STLSurf &s) {
     std::cout << "BPC::setSTL() Building kd-tree... bucketSize=" << bucketSize << "..";
     root->setBucketSize( bucketSize );
     if (x_direction)
-        root->setYZDimensions(); 
+        root->setYZDimensions();
     else if (y_direction)
         root->setXZDimensions();
     else {
@@ -79,9 +79,9 @@ void FiberPushCutter::pushCutter1(Fiber& f) {
 }
 
 void FiberPushCutter::pushCutter2(Fiber& f) {
-    std::list<Triangle>::iterator it,it_end;    // for looping over found triangles
+    std::vector<Triangle>::iterator it,it_end;    // for looping over found triangles
     Interval* i;
-    std::list<Triangle>* tris;
+    std::vector<Triangle>* tris;
     CLPoint cl;
     if ( x_direction ) {
         cl.x=0;
@@ -97,7 +97,7 @@ void FiberPushCutter::pushCutter2(Fiber& f) {
     for ( it=tris->begin() ; it!=it_end ; ++it) {
 		i = new Interval();
 		cutter->pushCutter(f,*i,*it);
-		f.addInterval(*i); 
+		f.addInterval(*i);
 		++nCalls;
 		delete i;
     }

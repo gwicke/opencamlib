@@ -1,20 +1,20 @@
 /*  $Id$
- * 
+ *
  *  Copyright (c) 2010 Anders Wallin (anders.e.e.wallin "at" gmail.com).
- *  
- *  This file is part of OpenCAMlib 
+ *
+ *  This file is part of OpenCAMlib
  *  (see https://github.com/aewallin/opencamlib).
- *  
+ *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
  *  the Free Software Foundation, either version 2.1 of the License, or
  *  (at your option) any later version.
- *  
+ *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU Lesser General Public License for more details.
- *  
+ *
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
@@ -30,12 +30,12 @@ namespace ocl
 {
 
 /// type of cc-point
-enum CCType {NONE, 
-             VERTEX, VERTEX_CYL, 
+enum CCType {NONE,
+             VERTEX, VERTEX_CYL,
              EDGE, EDGE_HORIZ, EDGE_SHAFT,
-             EDGE_HORIZ_CYL, EDGE_HORIZ_TOR, EDGE_BALL, 
+             EDGE_HORIZ_CYL, EDGE_HORIZ_TOR, EDGE_BALL,
              EDGE_POS, EDGE_NEG,  EDGE_CYL, EDGE_CONE, EDGE_CONE_BASE,
-             FACET, FACET_TIP, FACET_CYL, 
+             FACET, FACET_TIP, FACET_CYL,
              ERROR};
 
 ///
@@ -54,10 +54,9 @@ class CCPoint : public Point {
         /// create CCPoint at p with type t
         CCPoint(const Point& p, CCType t);
         /// create a CCPoint at Point p
-        CCPoint(const Point& p); 
-        virtual ~CCPoint(){};
-        
-        /// specifies the type of the Cutter Contact point. 
+        CCPoint(const Point& p);
+
+        /// specifies the type of the Cutter Contact point.
         CCType type;
         /// assign coordinates of Point to this CCPoint. sets type=NONE
         CCPoint &operator=(const Point &p);

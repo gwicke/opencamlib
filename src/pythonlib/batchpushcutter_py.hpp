@@ -1,20 +1,20 @@
 /*  $Id$
- * 
+ *
  *  Copyright (c) 2010 Anders Wallin (anders.e.e.wallin "at" gmail.com).
- *  
- *  This file is part of OpenCAMlib 
+ *
+ *  This file is part of OpenCAMlib
  *  (see https://github.com/aewallin/opencamlib).
- *  
+ *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
  *  the Free Software Foundation, either version 2.1 of the License, or
  *  (at your option) any later version.
- *  
+ *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU Lesser General Public License for more details.
- *  
+ *
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
@@ -50,15 +50,15 @@ class BatchPushCutter_py : public BatchPushCutter {
                         plist.append(p2);
                     }
                 }
-               
+
             }
             return plist;
         };
-        /// return triangles under cutter to Python. Not for CAM-algorithms, 
+        /// return triangles under cutter to Python. Not for CAM-algorithms,
         /// more for visualization and demonstration.
         boost::python::list getOverlapTriangles(Fiber& f) {
             boost::python::list trilist;
-            std::list<Triangle> *overlap_triangles = new std::list<Triangle>();
+            std::vector<Triangle> *overlap_triangles = new std::vector<Triangle>();
             //int plane = 3; // XY-plane
             //Bbox bb; //FIXME
             //KDNode2::search_kdtree( overlap_triangles, bb,  root, plane);
@@ -75,7 +75,7 @@ class BatchPushCutter_py : public BatchPushCutter {
                 assert(0);
             }
             overlap_triangles = root->search_cutter_overlap(cutter, &cl);
-            
+
             BOOST_FOREACH(Triangle t, *overlap_triangles) {
                 trilist.append(t);
             }

@@ -56,10 +56,6 @@ CLPoint::CLPoint(const Point& p)
     cc = new CCPoint();
 }
 
-CLPoint::~CLPoint() {
-   delete cc.load();
-}
-
 bool CLPoint::below(const Triangle& t) const {
     if (z < t.bb.maxpt.z )
         return true;

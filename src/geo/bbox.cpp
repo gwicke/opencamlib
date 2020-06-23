@@ -1,20 +1,20 @@
 /*  $Id$
- * 
+ *
  *  Copyright (c) 2010 Anders Wallin (anders.e.e.wallin "at" gmail.com).
- *  
- *  This file is part of OpenCAMlib 
+ *
+ *  This file is part of OpenCAMlib
  *  (see https://github.com/aewallin/opencamlib).
- *  
+ *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
  *  the Free Software Foundation, either version 2.1 of the License, or
  *  (at your option) any later version.
- *  
+ *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU Lesser General Public License for more details.
- *  
+ *
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
@@ -64,31 +64,8 @@ bool Bbox::isInside(Point& p) const {
         return true;
 }
 
-void Bbox::addPoint(const Point &p) {
-    if (!initialized) {
-        maxpt = p;
-        minpt = p;
-        initialized = true;
-    } else {
-        if (p.x > maxpt.x)
-            maxpt.x = p.x;
-        if (p.x < minpt.x)
-            minpt.x = p.x;
-        
-        if (p.y > maxpt.y)
-            maxpt.y = p.y;
-        if (p.y < minpt.y)
-            minpt.y = p.y;
-        
-        if (p.z > maxpt.z)
-            maxpt.z = p.z;
-        if (p.z < minpt.z)
-            minpt.z = p.z;
-    }
-}
-
-/// add each vertex of the Triangle      
-void Bbox::addTriangle(const Triangle &t) {   
+/// add each vertex of the Triangle
+void Bbox::addTriangle(const Triangle &t) {
     addPoint( t.p[0] );
     addPoint( t.p[1] );
     addPoint( t.p[2] );
@@ -129,7 +106,7 @@ double Bbox::operator[](const unsigned int idx) const{
             break;
         case 5:
             return maxpt.z;
-            break;    
+            break;
         default:
             assert(0);
             break;

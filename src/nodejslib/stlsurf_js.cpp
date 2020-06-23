@@ -39,7 +39,7 @@ Napi::Value STLSurfJS::getTriangles(const Napi::CallbackInfo &info)
     int a = 0;
     int b = 1;
     int c = 2;
-    std::list<ocl::Triangle>::iterator it;
+    std::vector<ocl::Triangle>::iterator it;
     for (it = actualClass_.tris.begin(); it != actualClass_.tris.end(); ++it)
     {
         Napi::Array points = Napi::Array::New(env);

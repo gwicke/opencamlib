@@ -1,20 +1,20 @@
 /*  $Id$
- * 
+ *
  *  Copyright (c) 2010-2011 Anders Wallin (anders.e.e.wallin "at" gmail.com).
- *  
- *  This file is part of OpenCAMlib 
+ *
+ *  This file is part of OpenCAMlib
  *  (see https://github.com/aewallin/opencamlib).
- *  
+ *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
  *  the Free Software Foundation, either version 2.1 of the License, or
  *  (at your option) any later version.
- *  
+ *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU Lesser General Public License for more details.
- *  
+ *
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
@@ -32,19 +32,19 @@ LineCLFilter::LineCLFilter() {
 
 void LineCLFilter::addCLPoint(const CLPoint& p) {
     clpoints.push_back(p);
-} 
+}
 void LineCLFilter::setTolerance(const double tolerance) {
     tol = tolerance;
 }
 
 void LineCLFilter::run() {
-    typedef std::list<CLPoint>::iterator cl_itr;
+    typedef std::vector<CLPoint>::iterator cl_itr;
     int n = clpoints.size();
     if (n<2)
         return; // can't filter lists of length 0, 1, or 2
 
-    std::list<CLPoint> new_list;
-    
+    std::vector<CLPoint> new_list;
+
     cl_itr p0 = clpoints.begin();
     cl_itr p1 = clpoints.begin();
     p1++;

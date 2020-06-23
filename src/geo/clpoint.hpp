@@ -47,7 +47,9 @@ class CLPoint : public Point {
         CLPoint(const CLPoint& cl);
         /// cl-point at Point p
         CLPoint(const Point& p);
-        virtual ~CLPoint();
+        ~CLPoint() {
+            delete cc.load();
+        }
         /// Atomic pointer to the corresponding CCPoint, protected against
         /// concurrent replacement in liftZ.
         std::atomic<CCPoint*> cc;
