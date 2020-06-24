@@ -120,16 +120,16 @@ class KDTree {
             root = build_node( &list, 0, NULL );
         }
         /// search for overlap with input Bbox bb, return found objects
-        std::vector<BBObj>* search( const Bbox& bb ){
+        std::vector<const BBObj*>* search( const Bbox& bb ){
             assert( !dimensions.empty() );
-            std::vector<BBObj>* tris = new std::vector<BBObj>();
+            std::vector<const BBObj*>* tris = new std::vector<const BBObj*>();
             // Avoid the need for reallocation in all but exceptional cases
             tris->reserve(256*1024);
             this->search_node( tris, bb, root );
             return tris;
         }
         /// search for overlap with a MillingCutter c positioned at cl, return found objects
-        std::vector<BBObj>* search_cutter_overlap(const MillingCutter* c, CLPoint* cl ){
+        std::vector<const BBObj*>* search_cutter_overlap(const MillingCutter* c, CLPoint* cl ){
             double r = c->getRadius();
             // build a bounding-box at the current CL
             Bbox bb( cl->x-r, cl->x+r, cl->y-r, cl->y+r, cl->z, cl->z+c->getLength() );
@@ -163,7 +163,9 @@ class KDTree {
             }
             // build lists of triangles for hi and lo child nodes
             std::vector<BBObj>* lolist = new std::vector<BBObj>();
+            lolist->reserve(tris->size() * 2 / 3);
             std::vector<BBObj>* hilist = new std::vector<BBObj>();
+            hilist->reserve(tris->size() * 2 / 3);
             BOOST_FOREACH(BBObj t, *tris) { // loop through each triangle and put it in either lolist or hilist
                 if (t.bb[spr->d] > cutvalue)
                     hilist->emplace_back(t);
@@ -259,11 +261,12 @@ class KDTree {
 
         /// search kd-tree starting at *node, looking for overlap with bb, and placing
         /// found objects in *tris
-        void search_node( std::vector<BBObj> *tris, const Bbox& bb, KDNode<BBObj> *node) {
+        void search_node(std::vector<const BBObj*>* tris, const Bbox& bb,
+                         KDNode<BBObj>* node) {
             if (node->isLeaf ) { // we found a bucket node, so add all triangles and return.
 
-                BOOST_FOREACH( BBObj t, *(node->tris) ) {
-                        tris->emplace_back(t);
+                BOOST_FOREACH( const BBObj& t, *(node->tris) ) {
+                        tris->push_back(&t);
                 }
                 //std::cout << " search_node Leaf bucket tris-size() = " << tris->size() << "\n";
                 return; // end recursion
@@ -290,8 +293,8 @@ class KDTree {
                 }
             }
             return; // Done. We get here after all the recursive calls above.
-        } // end search_kdtree();
-    // DATA
+        }           // end search_kdtree();
+                    // DATA
         /// bucket size of tree
         unsigned int bucketSize;
         /// pointer to root KDNode

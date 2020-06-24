@@ -58,7 +58,8 @@ class BatchPushCutter_py : public BatchPushCutter {
         /// more for visualization and demonstration.
         boost::python::list getOverlapTriangles(Fiber& f) {
             boost::python::list trilist;
-            std::vector<Triangle> *overlap_triangles = new std::vector<Triangle>();
+            std::vector<const Triangle*>* overlap_triangles =
+                new std::vector<const Triangle*>();
             //int plane = 3; // XY-plane
             //Bbox bb; //FIXME
             //KDNode2::search_kdtree( overlap_triangles, bb,  root, plane);
@@ -76,8 +77,8 @@ class BatchPushCutter_py : public BatchPushCutter {
             }
             overlap_triangles = root->search_cutter_overlap(cutter, &cl);
 
-            BOOST_FOREACH(Triangle t, *overlap_triangles) {
-                trilist.append(t);
+            BOOST_FOREACH(const Triangle* t, *overlap_triangles) {
+                trilist.append(*t);
             }
             delete overlap_triangles;
             return trilist;

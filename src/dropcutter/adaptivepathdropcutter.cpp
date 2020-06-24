@@ -1,20 +1,20 @@
 /*  $Id$
- * 
+ *
  *  Copyright (c) 2010 Anders Wallin (anders.e.e.wallin "at" gmail.com).
- *  
- *  This file is part of OpenCAMlib 
+ *
+ *  This file is part of OpenCAMlib
  *  (see https://github.com/aewallin/opencamlib).
- *  
+ *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
  *  the Free Software Foundation, either version 2.1 of the License, or
  *  (at your option) any later version.
- *  
+ *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU Lesser General Public License for more details.
- *  
+ *
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
@@ -56,11 +56,14 @@ void AdaptivePathDropCutter::run() {
 
 void AdaptivePathDropCutter::adaptive_sampling_run() {
     //std::cout << " apdc::adaptive_sampling_run()... ";
-    
+
     clpoints.clear();
+    clpoints.reserve(256*1024);
     BOOST_FOREACH( const Span* span, path->span_list ) {  // this loop could run in parallel, since spans don't depend on eachother
         CLPoint start = span->getPoint(0.0);
+        start.z = minimumZ;
         CLPoint stop = span->getPoint(1.0);
+        stop.z = minimumZ;
         subOp[0]->run(start);
         subOp[0]->run(stop);
         clpoints.push_back(start);
@@ -73,6 +76,7 @@ void AdaptivePathDropCutter::adaptive_sample(const Span* span, double start_t, d
     const double mid_t = start_t + (stop_t-start_t)/2.0; // mid point sample
     assert( mid_t > start_t );  assert( mid_t < stop_t );
     CLPoint mid_cl = span->getPoint(mid_t);
+    mid_cl.z = minimumZ;
     //std::cout << " apdc sampling at " << mid_t << "\n";
     subOp[0]->run( mid_cl );
     double fw_step = (stop_cl-start_cl).xyNorm();
@@ -81,7 +85,7 @@ void AdaptivePathDropCutter::adaptive_sample(const Span* span, double start_t, d
         adaptive_sample( span, start_t, mid_t , start_cl, mid_cl  );
         adaptive_sample( span, mid_t  , stop_t, mid_cl  , stop_cl );
     } else {
-        clpoints.push_back(stop_cl); 
+        clpoints.push_back(stop_cl);
     }
 }
 

@@ -84,37 +84,6 @@ bool Bbox::overlaps(const Bbox& b) const {
         return true;
 }
 
-// return the bounding box values as a vector:
-//  0    1    2    3    4    5
-// [minx maxx miny maxy minz maxz]
-double Bbox::operator[](const unsigned int idx) const{
-    switch(idx) {
-        case 0:
-            return minpt.x;
-            break;
-        case 1:
-            return maxpt.x;
-            break;
-        case 2:
-            return minpt.y;
-            break;
-        case 3:
-            return maxpt.y;
-            break;
-        case 4:
-            return minpt.z;
-            break;
-        case 5:
-            return maxpt.z;
-            break;
-        default:
-            assert(0);
-            break;
-    }
-    assert(0);
-    return -1;
-}
-
 std::ostream &operator<<(std::ostream &stream, const Bbox b) {
   stream << " Bbox \n";
   stream << " min= "<< b.minpt <<"\n";

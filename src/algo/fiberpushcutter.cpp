@@ -79,9 +79,9 @@ void FiberPushCutter::pushCutter1(Fiber& f) {
 }
 
 void FiberPushCutter::pushCutter2(Fiber& f) {
-    std::vector<Triangle>::iterator it,it_end;    // for looping over found triangles
+    std::vector<const Triangle*>::iterator it,it_end;    // for looping over found triangles
     Interval* i;
-    std::vector<Triangle>* tris;
+    std::vector<const Triangle*>* tris;
     CLPoint cl;
     if ( x_direction ) {
         cl.x=0;
@@ -96,7 +96,7 @@ void FiberPushCutter::pushCutter2(Fiber& f) {
     it_end = tris->end();
     for ( it=tris->begin() ; it!=it_end ; ++it) {
 		i = new Interval();
-		cutter->pushCutter(f,*i,*it);
+		cutter->pushCutter(f,*i,**it);
 		f.addInterval(*i);
 		++nCalls;
 		delete i;

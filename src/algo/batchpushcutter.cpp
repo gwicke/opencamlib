@@ -104,7 +104,7 @@ void BatchPushCutter::pushCutter2() {
     // std::cout << "BatchPushCutter2 with " << fibers->size() <<
     //           " fibers and " << surf->tris.size() << " triangles..." << std::endl;
     nCalls = 0;
-    std::vector<Triangle>* overlap_triangles;
+    std::vector<const Triangle*>* overlap_triangles;
     // boost::progress_display show_progress( fibers->size() );
     BOOST_FOREACH(Fiber& f, *fibers) {
         CLPoint cl;
@@ -121,10 +121,10 @@ void BatchPushCutter::pushCutter2() {
         }
         overlap_triangles = root->search_cutter_overlap(cutter, &cl);
         assert( overlap_triangles->size() <= surf->size() ); // can't possibly find more triangles than in the STLSurf
-        BOOST_FOREACH( const Triangle& t, *overlap_triangles) {
+        BOOST_FOREACH( const Triangle* t, *overlap_triangles) {
             //if ( bb->overlaps( t.bb ) ) {
                 Interval i;
-                cutter->pushCutter(f,i,t);
+                cutter->pushCutter(f,i,*t);
                 f.addInterval(i);
                 ++nCalls;
             //}
@@ -149,9 +149,9 @@ void BatchPushCutter::pushCutter3() {
     omp_set_num_threads(nthreads);
     //omp_set_nested(1);
 #endif
-    std::vector<Triangle>::iterator it,it_end;    // for looping over found triabgles
+    std::vector<const Triangle*>::iterator it,it_end;    // for looping over found triabgles
     Interval* i;
-    std::vector<Triangle>* tris;
+    std::vector<const Triangle*>* tris;
     std::vector<Fiber>& fiberr = *fibers;
 #ifdef _WIN32 // OpenMP version 2 of VS2013 OpenMP need signed loop variable
 	int n; // loop variable
@@ -187,7 +187,7 @@ void BatchPushCutter::pushCutter3() {
             //if ( bb->overlaps( it->bb ) ) {
                 // todo: optimization where method-calls are skipped if triangle bbox already in the fiber
                 i = new Interval();
-                cutter->pushCutter(fiberr[n],*i,*it);
+                cutter->pushCutter(fiberr[n],*i,**it);
                 fiberr[n].addInterval(*i);
                 ++calls;
                 delete i;

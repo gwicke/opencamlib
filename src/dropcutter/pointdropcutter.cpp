@@ -64,14 +64,14 @@ void PointDropCutter::run(CLPoint& clp) {
 void PointDropCutter::pointDropCutter1(CLPoint& clp) {
     nCalls = 0;
     int calls=0;
-    std::vector<Triangle>* tris;
-    //tris=new std::vector<Triangle>();
+    std::vector<const Triangle*>* tris;
+    //tris=new std::vector<const Triangle*>();
     tris = root->search_cutter_overlap( cutter, &clp );
-    std::vector<Triangle>::iterator it;
+    std::vector<const Triangle*>::iterator it;
     for( it=tris->begin(); it!=tris->end() ; ++it) { // loop over found triangles
-        if ( cutter->overlaps(clp,*it) ) { // cutter overlap triangle? check
-            if (clp.below(*it)) {
-                cutter->dropCutter(clp,*it);
+        if ( cutter->overlaps(clp,**it) ) { // cutter overlap triangle? check
+            if (clp.below(**it)) {
+                cutter->dropCutter(clp,**it);
                 ++calls;
             }
         }

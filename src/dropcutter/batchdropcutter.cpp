@@ -89,11 +89,11 @@ void BatchDropCutter::dropCutter2() {
             " cl-points and " << surf->tris.size() << " triangles.\n";
     std::cout.flush();
     nCalls = 0;
-    std::vector<Triangle> *triangles_under_cutter;
+    std::vector<const Triangle*> *triangles_under_cutter;
     BOOST_FOREACH(CLPoint &cl, *clpoints) { //loop through each CL-point
         triangles_under_cutter = root->search_cutter_overlap( cutter , &cl);
-        BOOST_FOREACH( const Triangle& t, *triangles_under_cutter) {
-            cutter->dropCutter(cl,t);
+        BOOST_FOREACH( const Triangle* t, *triangles_under_cutter) {
+            cutter->dropCutter(cl,*t);
             ++nCalls;
         }
         delete triangles_under_cutter;
@@ -110,13 +110,13 @@ void BatchDropCutter::dropCutter3() {
             " cl-points and " << surf->tris.size() << " triangles.\n";
     nCalls = 0;
     // boost::progress_display show_progress( clpoints->size() );
-    std::vector<Triangle> *triangles_under_cutter;
+    std::vector<const Triangle*> *triangles_under_cutter;
     BOOST_FOREACH(CLPoint &cl, *clpoints) { //loop through each CL-point
         triangles_under_cutter = root->search_cutter_overlap( cutter , &cl);
-        BOOST_FOREACH( const Triangle& t, *triangles_under_cutter) {
-            if (cutter->overlaps(cl,t)) {
-                if ( cl.below(t) ) {
-                    cutter->dropCutter(cl,t);
+        BOOST_FOREACH( const Triangle* t, *triangles_under_cutter) {
+            if (cutter->overlaps(cl,*t)) {
+                if ( cl.below(*t) ) {
+                    cutter->dropCutter(cl,*t);
                     ++nCalls;
                 }
             }
@@ -137,7 +137,7 @@ void BatchDropCutter::dropCutter4() {
     nCalls = 0;
     int calls=0;
     long int ntris = 0;
-    std::vector<Triangle>* tris;
+    std::vector<const Triangle*>* tris;
 #ifdef _WIN32 // OpenMP version 2 of VS2013 OpenMP need signed loop variable
 	int n; // loop variable
     int Nmax = clpoints->size();
@@ -151,7 +151,7 @@ void BatchDropCutter::dropCutter4() {
     omp_set_num_threads(nthreads); // the constructor sets number of threads right
                                    // or the user can explicitly specify something else
 #endif
-    std::vector<Triangle>::iterator it;
+    std::vector<const Triangle*>::iterator it;
     #pragma omp parallel for shared( nloop, ntris, calls, clref) private(n,tris,it)
         for (n=0;n< Nmax ;n++) { // PARALLEL OpenMP loop!
 #ifdef _OPENMP
@@ -164,23 +164,23 @@ void BatchDropCutter::dropCutter4() {
             tris = root->search_cutter_overlap( cutter, &clref[n] );
             // assert( tris->size() <= ntriangles ); // can't possibly find more triangles than in the STLSurf
             for( it=tris->begin(); it!=tris->end() ; ++it) { // loop over found triangles
-                if ( cutter->overlaps(clref[n],*it) ) { // cutter overlap triangle? check
-                    if (clref[n].below(*it)) {
-                        cutter->vertexDrop( clref[n],*it);
+                if ( cutter->overlaps(clref[n],**it) ) { // cutter overlap triangle? check
+                    if (clref[n].below(**it)) {
+                        cutter->vertexDrop( clref[n],**it);
                         ++calls;
                     }
                 }
             }
             for( it=tris->begin(); it!=tris->end() ; ++it) { // loop over found triangles
-                if ( cutter->overlaps(clref[n],*it) ) { // cutter overlap triangle? check
-                    if (clref[n].below(*it))
-                        cutter->facetDrop( clref[n],*it);
+                if ( cutter->overlaps(clref[n],**it) ) { // cutter overlap triangle? check
+                    if (clref[n].below(**it))
+                        cutter->facetDrop( clref[n],**it);
                 }
             }
             for( it=tris->begin(); it!=tris->end() ; ++it) { // loop over found triangles
-                if ( cutter->overlaps(clref[n],*it) ) { // cutter overlap triangle? check
-                    if (clref[n].below(*it))
-                        cutter->edgeDrop( clref[n],*it);
+                if ( cutter->overlaps(clref[n],**it) ) { // cutter overlap triangle? check
+                    if (clref[n].below(**it))
+                        cutter->edgeDrop( clref[n],**it);
                 }
             }
             ntris += tris->size();
@@ -200,7 +200,7 @@ void BatchDropCutter::dropCutter5() {
     nCalls = 0;
     int calls=0;
     long int ntris = 0;
-    std::vector<Triangle>* tris;
+    std::vector<const Triangle*>* tris;
 #ifdef _WIN32 // OpenMP version 2 of VS2013 OpenMP need signed loop variable
     int Nmax = clpoints->size();
 	int n; // loop variable
@@ -215,7 +215,7 @@ void BatchDropCutter::dropCutter5() {
     omp_set_num_threads(nthreads); // the constructor sets number of threads right
                                    // or the user can explicitly specify something else
 #endif
-    std::vector<Triangle>::iterator it;
+    std::vector<const Triangle*>::iterator it;
     #pragma omp parallel for schedule(dynamic) shared( nloop, ntris, calls, clref ) private(n,tris,it)
         for (n=0;n<Nmax;++n) { // PARALLEL OpenMP loop!
 #ifdef _OPENMP
@@ -229,9 +229,9 @@ void BatchDropCutter::dropCutter5() {
             assert( tris );
             // assert( tris->size() <= ntriangles ); // can't possibly find more triangles than in the STLSurf
             for( it=tris->begin(); it!=tris->end() ; ++it) { // loop over found triangles
-                if ( cutter->overlaps(clref[n],*it) ) { // cutter overlap triangle? check
-                    if (clref[n].below(*it)) {
-                        cutter->dropCutter( clref[n],*it);
+                if ( cutter->overlaps(clref[n],**it) ) { // cutter overlap triangle? check
+                    if (clref[n].below(**it)) {
+                        cutter->dropCutter( clref[n],**it);
                         ++calls;
                     }
                 }

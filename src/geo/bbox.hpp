@@ -24,6 +24,8 @@
 
 #include "point.hpp"
 
+#include <cassert>
+
 namespace ocl
 {
 
@@ -39,9 +41,35 @@ class Bbox {
         virtual ~Bbox() {};
 
 
-        /// index into maxpt and minpt returning a vector
-        /// [minx maxx miny maxy minz maxz]
-        double operator[](const unsigned int idx) const;
+        // access bounding box values as a vector:
+        //  0    1    2    3    4    5
+        // [minx maxx miny maxy minz maxz]
+        inline double operator[](const unsigned int idx) const{
+            switch(idx) {
+                case 0:
+                    return minpt.x;
+                    break;
+                case 1:
+                    return maxpt.x;
+                    break;
+                case 2:
+                    return minpt.y;
+                    break;
+                case 3:
+                    return maxpt.y;
+                    break;
+                case 4:
+                    return minpt.z;
+                    break;
+                case 5:
+                    return maxpt.z;
+                    break;
+                default:
+                    break;
+            }
+            assert(0);
+            return -1;
+        }
 
         /// return true if Point p is inside this Bbox
         bool isInside(Point& p) const;
